@@ -194,6 +194,18 @@
   .not-found{display:none;padding:24px 28px;color:var(--steel);font-size:14.5px;}
   .not-found.show{display:block;}
 
+  .delivery-instruction{
+    margin-top:20px;padding:16px 18px;background:var(--amber-bg);
+    border:1px solid #EAD3A0;border-radius:8px;
+    display:flex;gap:12px;align-items:flex-start;
+  }
+  .delivery-instruction svg{width:20px;height:20px;flex:none;color:var(--amber);margin-top:2px;}
+  .delivery-instruction .di-title{
+    margin:0 0 4px;font-family:'Barlow Condensed',sans-serif;font-weight:600;
+    text-transform:uppercase;letter-spacing:0.03em;font-size:14.5px;color:var(--amber);
+  }
+  .delivery-instruction .di-text{margin:0;font-size:14px;color:var(--ink);line-height:1.5;}
+
   /* ---- Services ---- */
   .services-section{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
   .service-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden;}
@@ -326,6 +338,15 @@
           </div>
 
           <ul class="timeline" id="timeline"></ul>
+
+          <div class="delivery-instruction" id="deliveryInstruction" style="display:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2L4 6v6c0 5 3.5 8.5 8 10 4.5-1.5 8-5 8-10V6l-8-4z"/><path d="M9 12l2 2 4-4"/></svg>
+            <div>
+              <p class="di-title">Signature required</p>
+              <p class="di-text" id="deliveryInstructionText">—</p>
+            </div>
+          </div>
+
         </div>
       </div>
       <div class="not-found" id="notFound">
@@ -465,6 +486,8 @@
       altitudeFt: 34000,
       speedKts: 498,
       eta: "Jul 20, 2026 (by end of day)",
+      signatureRequired: true,
+      recipient: "Geir Solbakken",
       events: [
         {label:"Picked up", place:"Fairfield, CA 94534, US", when:"Jul 10, 2026, 15:40 local", state:"done"},
         {label:"Departed origin hub", place:"OAK — Oakland, US", when:"Jul 11, 2026, 02:10 UTC", state:"done"},
@@ -564,6 +587,15 @@
 
     if(s.status === 'transit'){
       liveInterval = setInterval(tick, 3000);
+    }
+
+    const diBox = document.getElementById('deliveryInstruction');
+    if(s.signatureRequired && s.recipient){
+      document.getElementById('deliveryInstructionText').textContent =
+        'This package must be signed for by ' + s.recipient + ' upon delivery.';
+      diBox.style.display = 'flex';
+    } else {
+      diBox.style.display = 'none';
     }
 
     tag.scrollIntoView({behavior:'smooth', block:'start'});
