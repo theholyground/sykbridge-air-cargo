@@ -156,6 +156,7 @@
     padding:7px 16px;border-radius:20px;
   }
   .status-transit{background:var(--amber-bg);color:var(--amber);}
+  .status-customs{background:var(--amber-bg);color:var(--amber);}
   .status-delivered{background:var(--green-bg);color:var(--green);}
   .status-processing{background:#EAEDF1;color:var(--steel);}
 
@@ -479,20 +480,20 @@
 (function(){
   const shipments = {
     "SBC447190823": {
-      status: "transit",
+      status: "customs",
       origin: {city:"Oakland", code:"OAK", lat:37.72, lon:-122.22, full:"Fairfield, CA 94534, US"},
       dest: {city:"Oslo", code:"OSL", lat:60.19, lon:11.10, full:"Baatbyggerveien 8, 3057 Solbergelva, Norway"},
-      progress: 38,
-      altitudeFt: 34000,
-      speedKts: 498,
+      progress: 95,
+      altitudeFt: 0,
+      speedKts: 0,
       eta: "Jul 18, 2026, 15:40 local (Norway)",
       signatureRequired: true,
       recipient: "Geir Solbakken",
       events: [
         {label:"Picked up", place:"Fairfield, CA 94534, US", when:"Jul 10, 2026, 15:40 local", state:"done"},
         {label:"Departed origin hub", place:"OAK — Oakland, US", when:"Jul 11, 2026, 02:10 UTC", state:"done"},
-        {label:"In flight — cruising", place:"Over the North Atlantic", when:"Jul 11, 2026, 09:35 UTC", state:"current"},
-        {label:"Arrival scan expected", place:"OSL — Oslo, Norway", when:"Jul 18, 2026, est.", state:"pending"},
+        {label:"Arrived destination hub", place:"OSL — Oslo, Norway", when:"Jul 17, 2026, 08:15 UTC", state:"done"},
+        {label:"Held at customs", place:"OSL — Oslo, Norway", when:"Jul 17, 2026, 09:40 local", state:"current"},
         {label:"Out for delivery", place:"Solbergelva, Norway", when:"Jul 18, 2026, est.", state:"pending"},
         {label:"Delivered", place:"Baatbyggerveien 8, 3057 Solbergelva, Norway", when:"Estimated Jul 18, 2026, 15:40 local", state:"pending"},
       ]
@@ -540,6 +541,7 @@
   function statusPillHTML(status){
     if(status === 'delivered') return {cls:'status-delivered', text:'Delivered'};
     if(status === 'processing') return {cls:'status-processing', text:'Processing'};
+    if(status === 'customs') return {cls:'status-customs', text:'At customs'};
     return {cls:'status-transit', text:'In transit'};
   }
 
