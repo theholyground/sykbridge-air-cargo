@@ -632,23 +632,25 @@
 (function(){
   const shipments = {
     "SBC447190823": {
-      status: "failed_attempt",
+      status: "redelivery_scheduled",
       origin: {city:"Oakland", code:"OAK", lat:37.72, lon:-122.22, full:"Fairfield, CA 94534, US"},
-      dest: {city:"Solbergelva", code:"OSL", lat:59.7625, lon:10.0959, full:"Baatbyggerveien 8, 3057 Solbergelva, Norway"},
+      dest: {city:"Solbergelva", code:"OSL", lat:59.7625, lon:10.0959, full:"Båtbyggerveien 8, 3057 Solbergelva, Norway"},
       progress: 100,
       currentPos: {lat:59.913, lon:10.447},
       altitudeFt: 0,
       speedKts: 0,
-      eta: "Pending redelivery",
+      eta: "Redelivery Mon, Jul 20, 2026, before 12:00 local (Norway)",
       signatureRequired: true,
       recipient: "Geir Solbakken",
+      recipientPhone: "+47 993 91 094",
       events: [
         {label:"Picked up", place:"Fairfield, CA 94534, US", when:"Jul 10, 2026, 15:40 local", state:"done"},
         {label:"Departed origin hub", place:"OAK — Oakland, US", when:"Jul 11, 2026, 02:10 UTC", state:"done"},
         {label:"Arrived destination hub", place:"OSL — Oslo, Norway", when:"Jul 17, 2026, 08:15 UTC", state:"done"},
         {label:"Cleared customs", place:"OSL — Oslo, Norway", when:"Jul 18, 2026, 11:20 local", state:"done"},
         {label:"Out for delivery", place:"Solbergelva, Norway", when:"Jul 19, 2026, 09:15 local", state:"done"},
-        {label:"Delivery attempt failed", place:"Baatbyggerveien 8, 3057 Solbergelva, Norway", when:"Jul 19, 2026, 18:10 local", state:"current"},
+        {label:"Delivery attempt failed", place:"Båtbyggerveien 8, 3057 Solbergelva, Norway", when:"Jul 19, 2026, 18:10 local", state:"done"},
+        {label:"Redelivery scheduled", place:"Recipient confirmed — Mon, Jul 20, 2026, before 12:00 local", when:"Jul 19, 2026, 20:05 local", state:"current"},
       ]
     },
     "SBC118820471": {
@@ -697,6 +699,7 @@
     if(status === 'customs') return {cls:'status-customs', text:'Awaiting customs clearance'};
     if(status === 'out_for_delivery') return {cls:'status-out', text:'Out for delivery'};
     if(status === 'failed_attempt') return {cls:'status-failed', text:'Delivery Attempt Failed'};
+    if(status === 'redelivery_scheduled') return {cls:'status-out', text:'Delivery Rescheduled'};
     return {cls:'status-transit', text:'In transit'};
   }
 
@@ -751,8 +754,11 @@
 
     const diBox = document.getElementById('deliveryInstruction');
     if(s.signatureRequired && s.recipient && s.status !== 'failed_attempt'){
-      document.getElementById('deliveryInstructionText').textContent =
-        'This package must be signed for by ' + s.recipient + ' upon delivery.';
+      let text = 'This package must be signed for by ' + s.recipient + ' upon delivery.';
+      if(s.recipientPhone){
+        text += ' Recipient contact for the driver: ' + s.recipientPhone + '.';
+      }
+      document.getElementById('deliveryInstructionText').textContent = text;
       diBox.style.display = 'flex';
     } else {
       diBox.style.display = 'none';
@@ -840,5 +846,15 @@
 
 })();
 </script>
+<!-- Start of LiveChat (www.livechat.com) code -->
+<script>
+    window.__lc = window.__lc || {};
+    window.__lc.license = 19853805;
+    window.__lc.integration_name = "manual_channels";
+    window.__lc.product_name = "livechat";
+    ;(function(n,t,c){function i(n){return e._h?e._h.apply(null,n):e._q.push(n)}var e={_q:[],_h:null,_v:"2.0",on:function(){i(["on",c.call(arguments)])},once:function(){i(["once",c.call(arguments)])},off:function(){i(["off",c.call(arguments)])},get:function(){if(!e._h)throw new Error("[LiveChatWidget] You can't use getters before load.");return i(["get",c.call(arguments)])},call:function(){i(["call",c.call(arguments)])},init:function(){var n=t.createElement("script");n.async=!0,n.type="text/javascript",n.src="https://cdn.livechatinc.com/tracking.js",t.head.appendChild(n)}};!n.__lc.asyncInit&&e.init(),n.LiveChatWidget=n.LiveChatWidget||e}(window,document,[].slice))
+</script>
+<noscript><a href="https://www.livechat.com/chat-with/19853805/" rel="nofollow">Chat with us</a>, powered by <a href="https://www.livechat.com/?welcome" rel="noopener nofollow" target="_blank">LiveChat</a></noscript>
+<!-- End of LiveChat code -->
 </body>
 </html>
