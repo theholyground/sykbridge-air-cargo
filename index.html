@@ -159,6 +159,7 @@
   .status-transit{background:var(--amber-bg);color:var(--amber);}
   .status-customs{background:var(--amber-bg);color:var(--amber);}
   .status-out{background:var(--green-bg);color:var(--green);}
+  .status-failed{background:#FBE2E2;color:var(--red);}
   .status-delivered{background:var(--green-bg);color:var(--green);}
   .status-processing{background:#EAEDF1;color:var(--steel);}
 
@@ -208,6 +209,9 @@
     text-transform:uppercase;letter-spacing:0.03em;font-size:14.5px;color:var(--amber);
   }
   .delivery-instruction .di-text{margin:0;font-size:14px;color:var(--ink);line-height:1.5;}
+  .delivery-instruction.failed{background:#FBE2E2;border-color:#EFC0C0;}
+  .delivery-instruction.failed svg{color:var(--red);}
+  .delivery-instruction.failed .di-title{color:var(--red);}
 
   /* ---- Services ---- */
   .services-section{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
@@ -238,7 +242,8 @@
 
   /* ---- Support ---- */
   .support-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-bottom:44px;}
-  .support-card{background:#fff;padding:24px 22px;}
+  .support-card{background:#fff;padding:24px 22px;display:block;text-decoration:none;color:inherit;}
+  .support-card:hover{background:var(--paper);}
   .support-card svg{width:24px;height:24px;color:var(--red);margin-bottom:12px;}
   .support-card h3{font-size:17px;margin:0 0 8px;color:var(--navy);}
   .support-card p{font-size:13.5px;color:var(--steel);line-height:1.6;margin:0;}
@@ -382,6 +387,14 @@
 
           <ul class="timeline" id="timeline"></ul>
 
+          <div class="delivery-instruction failed" id="failedAttemptNotice" style="display:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><path d="M12 8v5M12 16h.01"/></svg>
+            <div>
+              <p class="di-title">Delivery attempt failed</p>
+              <p class="di-text">No confirmation of availability was received from the recipient ahead of the delivery attempt. A redelivery will be scheduled — contact support to arrange a preferred time.</p>
+            </div>
+          </div>
+
           <div class="delivery-instruction" id="deliveryInstruction" style="display:none;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2L4 6v6c0 5 3.5 8.5 8 10 4.5-1.5 8-5 8-10V6l-8-4z"/><path d="M9 12l2 2 4-4"/></svg>
             <div>
@@ -493,11 +506,11 @@
           <h3>Email us</h3>
           <p>enquiries-skybridgeaircargo@proton.me<br>Typical reply time: under 24 hours</p>
         </div>
-        <div class="support-card" id="liveChatCard" style="cursor:pointer;">
+        <a class="support-card" id="liveChatCard" href="https://www.livechat.com/chat-with/19853805/" target="_blank" rel="noopener">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
           <h3>Live chat</h3>
           <p>Available on this site<br>Mon–Sun, 24 hours</p>
-        </div>
+        </a>
       </div>
 
       <div class="support-body">
@@ -619,14 +632,14 @@
 (function(){
   const shipments = {
     "SBC447190823": {
-      status: "out_for_delivery",
+      status: "failed_attempt",
       origin: {city:"Oakland", code:"OAK", lat:37.72, lon:-122.22, full:"Fairfield, CA 94534, US"},
       dest: {city:"Solbergelva", code:"OSL", lat:59.7625, lon:10.0959, full:"Baatbyggerveien 8, 3057 Solbergelva, Norway"},
       progress: 100,
       currentPos: {lat:59.913, lon:10.447},
       altitudeFt: 0,
       speedKts: 0,
-      eta: "Jul 19, 2026, 18:10 local (Norway)",
+      eta: "Pending redelivery",
       signatureRequired: true,
       recipient: "Geir Solbakken",
       events: [
@@ -634,8 +647,8 @@
         {label:"Departed origin hub", place:"OAK — Oakland, US", when:"Jul 11, 2026, 02:10 UTC", state:"done"},
         {label:"Arrived destination hub", place:"OSL — Oslo, Norway", when:"Jul 17, 2026, 08:15 UTC", state:"done"},
         {label:"Cleared customs", place:"OSL — Oslo, Norway", when:"Jul 18, 2026, 11:20 local", state:"done"},
-        {label:"Out for delivery", place:"Solbergelva, Norway", when:"Jul 19, 2026, 09:15 local", state:"current"},
-        {label:"Delivered", place:"Baatbyggerveien 8, 3057 Solbergelva, Norway", when:"Estimated Jul 19, 2026, 18:10 local", state:"pending"},
+        {label:"Out for delivery", place:"Solbergelva, Norway", when:"Jul 19, 2026, 09:15 local", state:"done"},
+        {label:"Delivery attempt failed", place:"Baatbyggerveien 8, 3057 Solbergelva, Norway", when:"Jul 19, 2026, 18:10 local", state:"current"},
       ]
     },
     "SBC118820471": {
@@ -683,6 +696,7 @@
     if(status === 'processing') return {cls:'status-processing', text:'Processing'};
     if(status === 'customs') return {cls:'status-customs', text:'Awaiting customs clearance'};
     if(status === 'out_for_delivery') return {cls:'status-out', text:'Out for delivery'};
+    if(status === 'failed_attempt') return {cls:'status-failed', text:'Delivery Attempt Failed'};
     return {cls:'status-transit', text:'In transit'};
   }
 
@@ -732,8 +746,11 @@
       liveInterval = setInterval(tick, 3000);
     }
 
+    const failedBox = document.getElementById('failedAttemptNotice');
+    failedBox.style.display = (s.status === 'failed_attempt') ? 'flex' : 'none';
+
     const diBox = document.getElementById('deliveryInstruction');
-    if(s.signatureRequired && s.recipient){
+    if(s.signatureRequired && s.recipient && s.status !== 'failed_attempt'){
       document.getElementById('deliveryInstructionText').textContent =
         'This package must be signed for by ' + s.recipient + ' upon delivery.';
       diBox.style.display = 'flex';
@@ -821,27 +838,7 @@
     this.reset();
   });
 
-  // Live chat card opens the LiveChat widget
-  const chatCard = document.getElementById('liveChatCard');
-  if(chatCard){
-    chatCard.addEventListener('click', function(){
-      if(window.LiveChatWidget){
-        window.LiveChatWidget.call('maximize');
-      }
-    });
-  }
-
 })();
 </script>
-<!-- Start of LiveChat (www.livechat.com) code -->
-<script>
-    window.__lc = window.__lc || {};
-    window.__lc.license = 19853805;
-    window.__lc.integration_name = "manual_channels";
-    window.__lc.product_name = "livechat";
-    ;(function(n,t,c){function i(n){return e._h?e._h.apply(null,n):e._q.push(n)}var e={_q:[],_h:null,_v:"2.0",on:function(){i(["on",c.call(arguments)])},once:function(){i(["once",c.call(arguments)])},off:function(){i(["off",c.call(arguments)])},get:function(){if(!e._h)throw new Error("[LiveChatWidget] You can't use getters before load.");return i(["get",c.call(arguments)])},call:function(){i(["call",c.call(arguments)])},init:function(){var n=t.createElement("script");n.async=!0,n.type="text/javascript",n.src="https://cdn.livechatinc.com/tracking.js",t.head.appendChild(n)}};!n.__lc.asyncInit&&e.init(),n.LiveChatWidget=n.LiveChatWidget||e}(window,document,[].slice))
-</script>
-<noscript><a href="https://www.livechat.com/chat-with/19853805/" rel="nofollow">Chat with us</a>, powered by <a href="https://www.livechat.com/?welcome" rel="noopener nofollow" target="_blank">LiveChat</a></noscript>
-<!-- End of LiveChat code -->
 </body>
 </html>
