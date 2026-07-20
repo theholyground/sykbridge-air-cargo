@@ -632,7 +632,7 @@
 (function(){
   const shipments = {
     "SBC447190823": {
-      status: "redelivery_scheduled",
+      status: "out_for_delivery",
       origin: {city:"Oakland", code:"OAK", lat:37.72, lon:-122.22, full:"Fairfield, CA 94534, US"},
       dest: {city:"Solbergelva", code:"OSL", lat:59.7625, lon:10.0959, full:"Båtbyggerveien 8, 3057 Solbergelva, Norway"},
       progress: 100,
@@ -650,7 +650,8 @@
         {label:"Cleared customs", place:"OSL — Oslo, Norway", when:"Jul 18, 2026, 11:20 local", state:"done"},
         {label:"Out for delivery", place:"Solbergelva, Norway", when:"Jul 19, 2026, 09:15 local", state:"done"},
         {label:"Delivery attempt failed", place:"Båtbyggerveien 8, 3057 Solbergelva, Norway", when:"Jul 19, 2026, 18:10 local", state:"done"},
-        {label:"Redelivery scheduled", place:"Recipient confirmed — Mon, Jul 20, 2026, 15:15 local", when:"Jul 19, 2026, 20:05 local", state:"current"},
+        {label:"Redelivery scheduled", place:"Recipient confirmed — Mon, Jul 20, 2026, 15:15 local", when:"Jul 19, 2026, 20:05 local", state:"done"},
+        {label:"Out for delivery", place:"Solbergelva, Norway", when:"Jul 20, 2026, 14:35 local", state:"current"},
       ]
     },
     "SBC118820471": {
